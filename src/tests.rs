@@ -16,14 +16,23 @@ fn args(){
 
 #[test]
 fn reader(){
-    let f = cfg::Cfg::load("src/test_data/lztest.lz");
+    let f = cfg::Cfg::load("test_data/lztest.lz");
 
     match f {
         Ok(c)=>{
             assert_eq!( c.len(),2); 
+            assert_eq!(c.get("c2.lesson"),Some("3".to_string()));      
+            for (i,v) in c.into_iter().enumerate(){
+                if i == 0 {
+                    assert_eq!(v.name , "config")
+                }
+            }
         },
         Err(e)=>assert!(false,"Error {}",e),
     }
+
+
+
 
     //assert_eq!(r,Result::Err("poo".to_string()));
 }

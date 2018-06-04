@@ -1,14 +1,32 @@
 use std::fs::File;
-use std::io::prelude::*;
+use std::io::Read;
+//use std::io::prelude::*;
 use std::collections::HashMap;
 
-struct lz{
-    name:String,
+pub struct Lz{
+    pub name:String,
     deets:HashMap<String,String>,
 }
 
+impl Lz{
+    pub fn new(name:String)->Lz{
+        Lz{
+            name:name,
+            deets:HashMap::new(),
+        }
+    }
+    
+    pub fn get(&self,s : &str)->Option<String>{
+        match self.deets.get(s){
+            Some(r)=>Some(r.to_string()),
+            None=>None,
+        }
+    }
+}
+
+
 pub struct Cfg {
-     items:Vec<lz>,
+   items:Vec<Lz>,
 }
 
 impl Cfg {
@@ -17,16 +35,48 @@ impl Cfg {
         let mut res = Cfg{
             items:Vec::new(),
         };
-        for (k,a) in sp.enumerate() {
+        let mut fnd = false;
+
+        let mut curr = Lz::new("".to_string());
+
+        for a in sp {//TODO errors with line nums
             if a == "" {continue;}
-            res.items.push(lz{name:a.to_string(),deets:HashMap::new()}); 
-            print!("{} : {}\n",k,a);
+            let tabbed = match a.chars().nth(0) {
+                Some(c)=>c.is_whitespace(),
+                _=> true,
+            };
+            let a = a.trim_left();
+            if &a[..1] == "#" {continue;}
+
+            if tabbed {
+                //new property
+                let (lt,rt) = split_on(a,':');
+                if rt == "" {
+                    //TODO Err
+                }else {
+                    curr.deets.insert(lt.trim().to_string(),rt.trim().to_string());
+                }
+                
+            }else {
+                //new curr TODO after ':'
+                if fnd { 
+                    res.items.push(curr);
+                }
+                curr = Lz::new(a.trim().to_string());
+                fnd = true;
+            }
+
         }
+        if !fnd {
+            return Err("No Items found".to_string())
+
+        }
+        res.items.push(curr);
         Ok(res)
     }
 
     pub fn load(fname:&str)->Result<Cfg,String>{
-        let mut fok = File::open(fname);
+        let fok = File::open(fname);
         let mut s = String::new();
         match fok {
             Ok(mut f)=>{
@@ -40,6 +90,49 @@ impl Cfg {
     pub fn len(&self )->usize{
         self.items.len()
     }
+
+    pub fn get(&self,s:&str)->Option<String>{
+        let (lt,rt) = split_on(s,'.');
+        if rt != "" {
+            for ref lz in &self.items{
+                if lt == lz.name {
+                    return lz.get(rt);
+                }
+            }
+            return None; 
+        }
+
+        if self.items.len() == 0 {
+            return None;
+        }
+        self.items[0].get(s)
+            
+        
+    }
+}
+
+impl IntoIterator for Cfg {
+    type Item = Lz;
+    type IntoIter = ::std::vec::IntoIter<Lz>;
+   
+    fn into_iter(self)->::std::vec::IntoIter<Lz>{
+        self.items.into_iter()
+    }
+    
+
+}
+
+
+
+fn split_on(s:&str,c:char)->(&str,&str){
+        match s.find(c){
+            Some(n)=>{
+                let (lt,rt) = s.split_at(n);
+                let rt = &rt[1..];
+                (lt,rt)
+            },
+            None=>(s,"")
+        }
 }
 
 
