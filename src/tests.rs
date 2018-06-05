@@ -1,6 +1,7 @@
 
 use flag;
-use cfg;
+use lzlist;
+use string;
 
 #[test]
 fn it_works() {
@@ -16,7 +17,7 @@ fn args(){
 
 #[test]
 fn reader(){
-    let f = cfg::Cfg::load("test_data/lztest.lz");
+    let f = lzlist::LzList::load("test_data/lztest.lz");
 
     match f {
         Ok(c)=>{
@@ -36,4 +37,16 @@ fn reader(){
     }
 
     //assert_eq!(r,Result::Err("poo".to_string()));
+}
+
+fn strrep1(s:&str)->&str{
+    "plop"
+}
+
+#[test]
+fn string_edit() {
+    assert_eq!(string::replace("cdab",&|s|{
+        "poop"
+    }),"cdpoopb");
+    assert_eq!(string::replace("ppab",&strrep1),"ppplopb");
 }
