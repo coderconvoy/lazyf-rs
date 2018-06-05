@@ -1,5 +1,7 @@
 use std::fs::File;
 use std::io::Read;
+use std::str::FromStr;
+
 //use std::io::prelude::*;
 use std::collections::HashMap;
 
@@ -9,11 +11,20 @@ pub struct Lz{
 }
 
 impl Lz{
-    pub fn new(name:String)->Lz{
-        Lz{
-            name:name,
+    pub fn new(line:String)->Lz{
+        let ss = line.split(":");
+        let mut res = Lz{
+            name:"".to_string(),
             deets:HashMap::new(),
+        };
+        for (k,v) in ss.enumerate(){
+            if k ==0 {
+                res.name = v.trim().to_string();
+                continue;
+            }
+            res.deets.insert(format!("ext{}",k-1),v.trim().to_string());
         }
+        res
     }
     
     pub fn get(&self,s : &str)->Option<String>{
@@ -58,10 +69,10 @@ impl Cfg {
                 }
                 
             }else {
-                //new curr TODO after ':'
                 if fnd { 
                     res.items.push(curr);
                 }
+                //new curr 
                 curr = Lz::new(a.trim().to_string());
                 fnd = true;
             }
@@ -106,8 +117,36 @@ impl Cfg {
             return None;
         }
         self.items[0].get(s)
-            
-        
+    }
+
+    pub fn get_def(&self,s:&str,def:&str)->String{
+        match self.get(s) {
+            Some(r)=>r,
+            None=>def.to_string()
+        }
+    }
+
+    pub fn get_t<T:FromStr>(&self,s:&str)->Option<T>{
+        match self.get(s) {
+            Some(r)=>{
+                match r.parse::<T>(){
+                    Ok(res)=>Some(res),
+                    Err(_)=>None,
+                }
+            }
+            None=>None
+        }
+    }
+
+    pub fn get_t_def<T:FromStr>(&self,s:&str,def:T)->T{
+        match self.get_t::<T>(s) {
+            Some(res)=>res,
+            None=>def,
+        }
+    }
+
+    pub fn iter(&self)->::std::slice::Iter<Lz>{
+        self.items.iter()
     }
 }
 
@@ -118,8 +157,6 @@ impl IntoIterator for Cfg {
     fn into_iter(self)->::std::vec::IntoIter<Lz>{
         self.items.into_iter()
     }
-    
-
 }
 
 
