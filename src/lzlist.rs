@@ -1,7 +1,7 @@
 use std::fs::File;
 use std::io::Read;
 use std::str::FromStr;
-use string;
+use brace;
 
 //use std::io::prelude::*;
 use std::collections::HashMap;
@@ -62,7 +62,7 @@ impl LzList {
 
             if tabbed {
                 //new property
-                let (lt,rt) = string::split_on(a,':');
+                let (lt,rt) = brace::split_on(a,':');
                 if rt == "" {
                     //TODO Err
                 }else {
@@ -112,7 +112,7 @@ impl LzList {
     }
 
     pub fn get(&self,s:&str)->Option<String>{
-        let (lt,rt) = string::split_on(s,'.');
+        let (lt,rt) = brace::split_on(s,'.');
         if rt != "" {
             for ref lz in &self.items{
                 if lt == lz.name {

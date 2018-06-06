@@ -2,11 +2,11 @@
 use std::env;
 use std::str::FromStr;
 
-pub fn ss_a(s:&str, iter:&mut Iterator<Item=String>)->Result<String,String>{
+pub fn ss_a(s:&str, iter:&mut Iterator<Item=String>)->Option<String>{
     let mut fnd = false;
     for a in iter{
         if fnd {
-            return Result::Ok(a.clone());
+            return Some(a.clone());
         }
         if a == s {
             fnd = true;
@@ -14,32 +14,32 @@ pub fn ss_a(s:&str, iter:&mut Iterator<Item=String>)->Result<String,String>{
         println!("{}",a);
     }
 
-    if fnd { return Result::Ok(String::from(""));}
+    if fnd { return Some(String::from(""));}
 
-    Result::Err("".to_string())
+    None
 }
 
 
-pub fn ss(s:&str)->Result<String,String>{
+pub fn ss(s:&str)->Option<String>{
     ss_a(s,&mut env::args())
 }
 
 pub fn ss_def(s:&str,def:&str)->String{
     match ss(s) {
-        Result::Ok(r)=> r,
-        Result::Err(_)=> String::from(def.clone()),
+        Some(r)=> r,
+        None=> String::from(def.clone()),
     }
 }
 
 pub fn t<T:FromStr>(s:&str)->Result<T,String>{
     match ss(s){
-        Result::Ok(r)=>{
+        Some(r)=>{
             match r.parse::<T>() {
                 Result::Ok(n)=> Result::Ok(n),
                 Result::Err(_)=> Result::Err("no parse".to_string()),
             }
         }
-        Result::Err(_)=>Result::Err("No find".to_string()),
+        None=>Result::Err("No find".to_string()),
     }
 }
 

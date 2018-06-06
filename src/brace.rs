@@ -1,6 +1,9 @@
-//string utilities for
+//brace takes a string with {} as deliminators
+//and can replace the contents with something else
+
 use std::env;
 
+//A simple Util function for this library
 pub fn split_on(s:&str,c:char)->(&str,&str){
         match s.find(c){
             Some(n)=>{

@@ -1,7 +1,7 @@
 
 use flag;
 use lzlist;
-use string;
+use brace;
 
 #[test]
 fn it_works() {
@@ -12,7 +12,7 @@ fn it_works() {
 fn args(){
     let v = ["-a","60"];
     let r = flag::ss_a("-a",&mut v.into_iter().map(|&a|String::from(a)));
-    assert_eq!(r,Result::Ok("60".to_string()));
+    assert_eq!(r,Some("60".to_string()));
 }
 
 #[test]
@@ -49,20 +49,20 @@ fn rev(s:&str)->String{
 
 #[test]
 fn string_edit() {
-    assert_eq!(string::brace_replace("cd{a}b",&|s|{
+    assert_eq!(brace::brace_replace("cd{a}b",&|s|{
         "poop".to_string()
     }),"cdpoopb");
-    assert_eq!(string::brace_replace("pp{a}b",&strrep1),"ppplopb");
+    assert_eq!(brace::brace_replace("pp{a}b",&strrep1),"ppplopb");
 
     assert_eq!(rev("hello"),"olleh");
 
-    assert_eq!(string::brace_replace("ab{cd{ef}g{hi}j}",&rev),"abjhigefdc");
+    assert_eq!(brace::brace_replace("ab{cd{ef}g{hi}j}",&rev),"abjhigefdc");
 
-    assert_eq!(string::brace_replace("ab{cd{ef}g{hij",&rev),"abhijgefdc");
+    assert_eq!(brace::brace_replace("ab{cd{ef}g{hij",&rev),"abhijgefdc");
 
-    assert_eq!(string::brace_replace("as}b{ef}",&rev),"as}bfe");
+    assert_eq!(brace::brace_replace("as}b{ef}",&rev),"as}bfe");
 
     //fix test so not locked to my account
-    assert_eq!(string::brace_env("h{HOME}"),"h/home/matthew");
+    assert_eq!(brace::brace_env("h{HOME}"),"h/home/matthew");
 }
 
