@@ -1,6 +1,7 @@
 use lzlist;
 use flag;
 use brace;
+use get::SGetter;
 
 pub struct Cfg{
     list:lzlist::LzList,
@@ -21,7 +22,8 @@ impl Cfg{
     }
 
     pub fn load_first(fgname:&str,locs:&Iterator<Item=&str>)->Cfg{
-        match flag::ss(fgname){
+        let floc = flag::Fg{}.get_s(fgname);
+        match floc{
             Some(s)=>return Cfg::load(&brace::brace_env(&s)),
             _=>{},
         }

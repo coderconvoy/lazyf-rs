@@ -3,6 +3,8 @@ use flag;
 use lzlist;
 use brace;
 
+use get::SGetter;
+
 #[test]
 fn it_works() {
     assert_eq!(2 + 2, 4);
@@ -11,8 +13,15 @@ fn it_works() {
 #[test]
 fn args(){
     let v = ["-a","60"];
-    let r = flag::ss_a("-a",&mut v.into_iter().map(|&a|String::from(a)));
+    let r = flag::ss_get("-a",&mut v.into_iter().map(|&a|String::from(a)));
     assert_eq!(r,Some("60".to_string()));
+
+    let a = flag::Fg{}.get_s_def("-poop","nopoopforyou");
+    assert_eq!(a,"nopoopforyou");
+
+    let p = flag::FgTest::new(vec!["-b".to_string(),"3".to_string()]);
+    assert_eq!(p.get_t_def("-b",0),3);
+
 }
 
 #[test]
@@ -22,16 +31,16 @@ fn reader(){
     match f {
         Ok(c)=>{
             assert_eq!( c.len(),2); 
-            assert_eq!( c.get("config.ext0"),Some("4".to_string()));
+            assert_eq!( c.get_s("config.ext0"),Some("4".to_string()));
             assert_eq!( c.get_t_def("config.ext0",0),4);
-            assert_eq!(c.get("c2.lesson"),Some("3".to_string()));      
+            assert_eq!(c.get_s("c2.lesson"),Some("3".to_string()));      
 
             for (i,v) in c.iter().enumerate(){
                 if i == 0 {
                     assert_eq!(v.name , "config")
                 }
             }
-            assert_eq!(c.get("c3.poo"),None);
+            assert_eq!(c.get_s("c3.poo"),None);
         },
         Err(e)=>assert!(false,"Error {}",e),
     }

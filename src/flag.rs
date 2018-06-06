@@ -1,8 +1,9 @@
 
 use std::env;
 use std::str::FromStr;
+use get::SGetter;
 
-pub fn ss_a(s:&str, iter:&mut Iterator<Item=String>)->Option<String>{
+pub fn ss_get(s:&str, iter:&mut Iterator<Item=String>)->Option<String>{
     let mut fnd = false;
     for a in iter{
         if fnd {
@@ -19,33 +20,31 @@ pub fn ss_a(s:&str, iter:&mut Iterator<Item=String>)->Option<String>{
     None
 }
 
-
-pub fn ss(s:&str)->Option<String>{
-    ss_a(s,&mut env::args())
+pub struct Fg{}
+    
+pub struct FgTest{
+    v:Vec<String>,
 }
 
-pub fn ss_def(s:&str,def:&str)->String{
-    match ss(s) {
-        Some(r)=> r,
-        None=> String::from(def.clone()),
+impl SGetter for Fg{
+    fn get_s(&self,s:&str)->Option<String>{
+        return ss_get(s,&mut env::args())
     }
 }
 
-pub fn t<T:FromStr>(s:&str)->Result<T,String>{
-    match ss(s){
-        Some(r)=>{
-            match r.parse::<T>() {
-                Result::Ok(n)=> Result::Ok(n),
-                Result::Err(_)=> Result::Err("no parse".to_string()),
-            }
+impl SGetter for FgTest{
+    fn get_s(&self,s:&str)->Option<String>{
+        ss_get(s,&mut self.v.clone().into_iter())
+    }
+}
+
+
+impl FgTest{
+    pub fn new(v:Vec<String>)->FgTest{
+        FgTest{
+            v:v,
         }
-        None=>Result::Err("No find".to_string()),
     }
 }
 
-pub fn t_def<T:FromStr>(s:&str,def:T)->T{
-    match t::<T>(s) {
-        Result::Ok(r)=>r,
-        Result::Err(_)=>def,
-    }
-}
+

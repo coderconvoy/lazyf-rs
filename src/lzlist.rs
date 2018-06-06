@@ -1,7 +1,7 @@
 use std::fs::File;
 use std::io::Read;
-use std::str::FromStr;
 use brace;
+use get::SGetter;
 
 //use std::io::prelude::*;
 use std::collections::HashMap;
@@ -28,7 +28,10 @@ impl Lz{
         res
     }
     
-    pub fn get(&self,s : &str)->Option<String>{
+}
+
+impl SGetter for Lz {
+    fn get_s(&self,s : &str)->Option<String>{
         match self.deets.get(s){
             Some(r)=>Some(r.to_string()),
             None=>None,
@@ -111,12 +114,20 @@ impl LzList {
         self.items.len()
     }
 
-    pub fn get(&self,s:&str)->Option<String>{
+
+
+    pub fn iter(&self)->::std::slice::Iter<Lz>{
+        self.items.iter()
+    }
+}
+
+impl SGetter for LzList {
+    fn get_s(&self,s:&str)->Option<String>{
         let (lt,rt) = brace::split_on(s,'.');
         if rt != "" {
             for ref lz in &self.items{
                 if lt == lz.name {
-                    return lz.get(rt);
+                    return lz.get_s(rt);
                 }
             }
             return None; 
@@ -125,37 +136,7 @@ impl LzList {
         if self.items.len() == 0 {
             return None;
         }
-        self.items[0].get(s)
-    }
-
-    pub fn get_def(&self,s:&str,def:&str)->String{
-        match self.get(s) {
-            Some(r)=>r,
-            None=>def.to_string()
-        }
-    }
-
-    pub fn get_t<T:FromStr>(&self,s:&str)->Option<T>{
-        match self.get(s) {
-            Some(r)=>{
-                match r.parse::<T>(){
-                    Ok(res)=>Some(res),
-                    Err(_)=>None,
-                }
-            }
-            None=>None
-        }
-    }
-
-    pub fn get_t_def<T:FromStr>(&self,s:&str,def:T)->T{
-        match self.get_t::<T>(s) {
-            Some(res)=>res,
-            None=>def,
-        }
-    }
-
-    pub fn iter(&self)->::std::slice::Iter<Lz>{
-        self.items.iter()
+        self.items[0].get_s(s)
     }
 }
 
