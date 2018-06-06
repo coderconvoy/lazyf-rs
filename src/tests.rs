@@ -39,14 +39,30 @@ fn reader(){
     //assert_eq!(r,Result::Err("poo".to_string()));
 }
 
-fn strrep1(s:&str)->&str{
-    "plop"
+fn strrep1(s:&str)->String{
+    "plop".to_string()
+}
+
+fn rev(s:&str)->String{
+    s.chars().rev().collect()
 }
 
 #[test]
 fn string_edit() {
-    assert_eq!(string::replace("cdab",&|s|{
-        "poop"
+    assert_eq!(string::brace_replace("cd{a}b",&|s|{
+        "poop".to_string()
     }),"cdpoopb");
-    assert_eq!(string::replace("ppab",&strrep1),"ppplopb");
+    assert_eq!(string::brace_replace("pp{a}b",&strrep1),"ppplopb");
+
+    assert_eq!(rev("hello"),"olleh");
+
+    assert_eq!(string::brace_replace("ab{cd{ef}g{hi}j}",&rev),"abjhigefdc");
+
+    assert_eq!(string::brace_replace("ab{cd{ef}g{hij",&rev),"abhijgefdc");
+
+    assert_eq!(string::brace_replace("as}b{ef}",&rev),"as}bfe");
+
+    //fix test so not locked to my account
+    assert_eq!(string::brace_env("h{HOME}"),"h/home/matthew");
 }
+
