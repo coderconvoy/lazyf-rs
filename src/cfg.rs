@@ -30,7 +30,8 @@ impl Cfg{
         }
 
         for l in locs {
-            match lzlist::LzList::load(&brace::env_replace(l)){
+            let l2 = &brace::env_replace(l);
+            match lzlist::LzList::load(l2){
                 Ok(r)=>return Cfg{list:r},
                 _=>{},
             }

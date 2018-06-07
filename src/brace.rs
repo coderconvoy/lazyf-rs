@@ -28,7 +28,7 @@ pub fn replace(s:&str,f:&Fn(&str)->String)->String{
             esc = false;
             continue;
         }
-        if c == '/'{
+        if c == '\\'{
             esc = true; 
             continue;
         }

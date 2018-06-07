@@ -1,6 +1,5 @@
 
 use std::env;
-use std::str::FromStr;
 use get::SGetter;
 
 pub fn ss_get(s:&str, iter:&mut Iterator<Item=String>)->Option<String>{
