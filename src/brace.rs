@@ -15,7 +15,7 @@ pub fn split_on(s:&str,c:char)->(&str,&str){
         }
 }
 
-pub fn brace_replace(s:&str,f:&Fn(&str)->String)->String{
+pub fn replace(s:&str,f:&Fn(&str)->String)->String{
     let mut res = "".to_string();
 
     let mut depth = 0;
@@ -50,7 +50,7 @@ pub fn brace_replace(s:&str,f:&Fn(&str)->String)->String{
             depth -=1;
             if depth == 0{
                 if midepth >1 {
-                    temp = brace_replace(&temp,f);
+                    temp = replace(&temp,f);
                 } 
                 res.push_str(&f(&temp));
                 
@@ -60,7 +60,7 @@ pub fn brace_replace(s:&str,f:&Fn(&str)->String)->String{
         temp.push(c);
     }
     if depth > 1 {
-        temp = brace_replace(&temp,f);
+        temp = replace(&temp,f);
     }
     if depth > 0 {
         res.push_str(&f(&temp));
@@ -69,7 +69,7 @@ pub fn brace_replace(s:&str,f:&Fn(&str)->String)->String{
 }
 
 
-pub fn env_rep(s:&str)->String{
+pub fn env(s:&str)->String{
     match env::var_os(s) {
         Some(ros)=> match ros.to_str(){
             Some(res)=>String::from(res),
@@ -79,6 +79,8 @@ pub fn env_rep(s:&str)->String{
     }
 }
 
-pub fn brace_env(s:&str)->String{
-    brace_replace(s,&env_rep)
+pub fn env_replace(s:&str)->String{
+    replace(s,&env)
 }
+
+

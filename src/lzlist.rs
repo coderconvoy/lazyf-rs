@@ -30,8 +30,8 @@ impl Lz{
     
 }
 
-impl SGetter for Lz {
-    fn get_s(&self,s : &str)->Option<String>{
+impl <'a> SGetter<&'a str> for Lz {
+    fn get_s(&self,s :&str)->Option<String>{
         match self.deets.get(s){
             Some(r)=>Some(r.to_string()),
             None=>None,
@@ -121,7 +121,7 @@ impl LzList {
     }
 }
 
-impl SGetter for LzList {
+impl <'a> SGetter<&'a str> for LzList {
     fn get_s(&self,s:&str)->Option<String>{
         let (lt,rt) = brace::split_on(s,'.');
         if rt != "" {

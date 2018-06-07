@@ -21,16 +21,36 @@ impl Cfg{
         }
     }
 
-    pub fn load_first(fgname:&str,locs:&Iterator<Item=&str>)->Cfg{
+    //load_first
+    pub fn load_first(fgname:&str,locs:&[&str])->Cfg{
         let floc = flag::Fg{}.get_s(fgname);
         match floc{
-            Some(s)=>return Cfg::load(&brace::brace_env(&s)),
+            Some(s)=>return Cfg::load(&brace::env_replace(&s)),
             _=>{},
         }
 
-        //TODO loop loads and match to get first working
+        for l in locs {
+            match lzlist::LzList::load(&brace::env_replace(l)){
+                Ok(r)=>return Cfg{list:r},
+                _=>{},
+            }
+        }
         Cfg{
             list:lzlist::LzList::empty(),
         }
     }
 }
+
+impl <'a> SGetter<(&'a str,&'a str)> for Cfg{
+    fn get_s(&self, fc:(&str,&str))->Option<String>{
+        let (fg,ct) = fc; 
+        let fres = flag::Fg{}.get_s(fg);
+        match fres {
+            Some(_)=>return fres,
+            _=>{},
+        }
+        self.list.get_s(ct)
+    }
+}
+
+

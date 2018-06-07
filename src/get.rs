@@ -1,20 +1,22 @@
 use std::str::FromStr;
 
 
-pub trait SGetter {
-    fn get_s(&self,s:&str)->Option<String>;
+pub trait SGetter<IT> {
+    //IT = IndexType
+    //RT = ResultType
+    fn get_s(&self,s:IT)->Option<String>;
     
-    fn get_s_def(&self,s:&str,def:&str)->String{
+    fn get_s_def(&self,s:IT,def:&str)->String{
         match self.get_s(s) {
             Some(r)=>r,
             None=>def.to_string()
         }
     }
 
-    fn get_t<T:FromStr>(&self,s:&str)->Option<T>{
+    fn get_t<RT:FromStr>(&self,s:IT)->Option<RT>{
         match self.get_s(s) {
             Some(r)=>{
-                match r.parse::<T>(){
+                match r.parse::<RT>(){
                     Ok(res)=>Some(res),
                     Err(_)=>None,
                 }
@@ -23,8 +25,8 @@ pub trait SGetter {
         }
     }
 
-    fn get_t_def<T:FromStr>(&self,s:&str,def:T)->T{
-        match self.get_t::<T>(s) {
+    fn get_t_def<RT:FromStr>(&self,s:IT,def:RT)->RT{
+        match self.get_t(s) {
             Some(res)=>res,
             None=>def,
         }

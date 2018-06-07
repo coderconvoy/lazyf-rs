@@ -26,13 +26,13 @@ pub struct FgTest{
     v:Vec<String>,
 }
 
-impl SGetter for Fg{
+impl <'a> SGetter<&'a str> for Fg{
     fn get_s(&self,s:&str)->Option<String>{
-        return ss_get(s,&mut env::args())
+        return ss_get(&s,&mut env::args())
     }
 }
 
-impl SGetter for FgTest{
+impl <'a> SGetter<&'a str> for FgTest{
     fn get_s(&self,s:&str)->Option<String>{
         ss_get(s,&mut self.v.clone().into_iter())
     }

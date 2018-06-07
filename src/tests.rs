@@ -2,6 +2,7 @@
 use flag;
 use lzlist;
 use brace;
+use cfg;
 
 use get::SGetter;
 
@@ -48,6 +49,12 @@ fn reader(){
     //assert_eq!(r,Result::Err("poo".to_string()));
 }
 
+#[test]
+fn config(){
+    let cg = cfg::Cfg::load("test_data/lztest.lz");
+    assert_eq!(cg.get_t_def(("-fg","c2.lesson"),0),3);
+}
+
 fn strrep1(s:&str)->String{
     "plop".to_string()
 }
@@ -58,20 +65,20 @@ fn rev(s:&str)->String{
 
 #[test]
 fn string_edit() {
-    assert_eq!(brace::brace_replace("cd{a}b",&|s|{
+    assert_eq!(brace::replace("cd{a}b",&|_s|{
         "poop".to_string()
     }),"cdpoopb");
-    assert_eq!(brace::brace_replace("pp{a}b",&strrep1),"ppplopb");
+    assert_eq!(brace::replace("pp{a}b",&strrep1),"ppplopb");
 
     assert_eq!(rev("hello"),"olleh");
 
-    assert_eq!(brace::brace_replace("ab{cd{ef}g{hi}j}",&rev),"abjhigefdc");
+    assert_eq!(brace::replace("ab{cd{ef}g{hi}j}",&rev),"abjhigefdc");
 
-    assert_eq!(brace::brace_replace("ab{cd{ef}g{hij",&rev),"abhijgefdc");
+    assert_eq!(brace::replace("ab{cd{ef}g{hij",&rev),"abhijgefdc");
 
-    assert_eq!(brace::brace_replace("as}b{ef}",&rev),"as}bfe");
+    assert_eq!(brace::replace("as}b{ef}",&rev),"as}bfe");
 
     //fix test so not locked to my account
-    assert_eq!(brace::brace_env("h{HOME}"),"h/home/matthew");
+    assert_eq!(brace::env_replace("h{HOME}"),"h/home/matthew");
 }
 
