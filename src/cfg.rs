@@ -2,21 +2,26 @@ use lzlist;
 use flag;
 use brace;
 use get::SGetter;
+use std::path::PathBuf;
 
 pub struct Cfg{
     list:lzlist::LzList,
+    loc:PathBuf,
 }
 
 impl Cfg{
     //Will return a Cfg even if there are no items.
    
     pub fn load(loc:&str)->Cfg{
-        match lzlist::LzList::load(loc) {
+        let rloc = &brace::env_replace(loc)
+        match lzlist::LzList::load(rloc) {
             Ok(r)=>Cfg{
                 list:r,
+                loc:PathBuf::from(rloc),
             },
             Err(_)=>Cfg{
                 list:lzlist::LzList::empty(),
+                loc:PathBuf::from(&brace::env("$PWD")),
             }
         }
     }
@@ -25,7 +30,7 @@ impl Cfg{
     pub fn load_first(fgname:&str,locs:&[&str])->Cfg{
         let floc = flag::Fg{}.get_s(fgname);
         match floc{
-            Some(s)=>return Cfg::load(&brace::env_replace(&s)),
+            Some(s)=>return Cfg::load(&s),
             _=>{},
         }
 
@@ -39,6 +44,12 @@ impl Cfg{
         Cfg{
             list:lzlist::LzList::empty(),
         }
+    }
+
+    pub fn localize(s:&str)->PathBuf{
+        let res = path.clone();
+        res.push(s);
+        res
     }
 }
 
