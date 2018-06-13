@@ -55,7 +55,7 @@ fn config(){
     assert_eq!(cg.get_t_def(("-fg","c2.lesson"),0),3);
 }
 
-fn strrep1(s:&str)->String{
+fn strrep1(_:&str)->String{
     "plop".to_string()
 }
 

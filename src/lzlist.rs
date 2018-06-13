@@ -1,18 +1,20 @@
 use std::fs::File;
 use std::io::Read;
+use std::fmt::Display;
 use brace;
 use get::SGetter;
 
 //use std::io::prelude::*;
 use std::collections::HashMap;
 
+#[derive(Clone)]
 pub struct Lz{
     pub name:String,
     deets:HashMap<String,String>,
 }
 
 impl Lz{
-    pub fn new(line:String)->Lz{
+    pub fn new(line:&str)->Lz{
         let ss = line.split(":");
         let mut res = Lz{
             name:"".to_string(),
@@ -27,6 +29,7 @@ impl Lz{
         }
         res
     }
+
     
 }
 
@@ -52,7 +55,7 @@ impl LzList {
         };
         let mut fnd = false;
 
-        let mut curr = Lz::new("".to_string());
+        let mut curr = Lz::new("");
 
         for a in sp {//TODO errors with line nums
             if a == "" {continue;}
@@ -77,7 +80,7 @@ impl LzList {
                     res.items.push(curr);
                 }
                 //new curr 
-                curr = Lz::new(a.trim().to_string());
+                curr = Lz::new(a.trim());
                 fnd = true;
             }
 
@@ -101,8 +104,20 @@ impl LzList {
                 }
             },
             Err(_)=> Err("Could not read file".to_string()),
-            
         }
+    }
+
+    pub fn load_all<'a, IT, ST:Display>(fnames:&mut IT)->LzList
+        where IT:Iterator<Item = ST>
+    {
+        let mut jn = Vec::new();
+        for n in fnames{ 
+            match LzList::load(&n.to_string()){
+                Ok(lz)=>jn.push(lz),
+                _=>{},
+            }
+        }
+        LzList::join(&jn[..])
     }
 
     pub fn empty()->LzList{
@@ -114,6 +129,18 @@ impl LzList {
         self.items.len()
     }
 
+    pub fn join(ll:&[LzList])->LzList{
+        let mut ritems:Vec<Lz> = Vec::new();
+        for l in ll.iter() {
+            for i in l.iter(){
+                let p = (*i).clone();
+                ritems.push(p);
+            }
+        }
+        LzList{
+            items:ritems,
+        }
+    }
 
 
     pub fn iter(&self)->::std::slice::Iter<Lz>{
@@ -149,6 +176,22 @@ impl IntoIterator for LzList {
     }
 }
 
+
+#[cfg(test)]
+mod tests {
+    use lzlist::LzList;
+    use get::SGetter;
+    #[test]
+    fn tload_all(){
+        let ll = LzList::load_all(&mut ["test_data/lztest.lz","test_data/lztest2.lz"].iter());
+        assert_eq!(ll.len(),3);
+
+        assert_eq!(ll.get_t_def("cf3.poop",0),7);
+        
+        //assert_eq!(l2.len(),3);
+        
+    }
+}
 
 
 
