@@ -1,4 +1,6 @@
 use std::fs::File;
+use std::fmt::Debug;
+use std::path::Path;
 use std::io::Read;
 use std::fmt::Display;
 use brace;
@@ -64,6 +66,9 @@ impl LzList {
                 _=> true,
             };
             let a = a.trim_left();
+
+            if a.len() == 0 {continue;}
+
             if &a[..1] == "#" {continue;}
 
             if tabbed {
@@ -93,7 +98,7 @@ impl LzList {
         Ok(res)
     }
 
-    pub fn load(fname:&str)->Result<LzList,String>{
+    pub fn load<P:AsRef<Path>>(fname:P)->Result<LzList,String>{
         let fok = File::open(fname);
         let mut s = String::new();
         match fok {
@@ -107,12 +112,12 @@ impl LzList {
         }
     }
 
-    pub fn load_all<'a, IT, ST:Display>(fnames:&mut IT)->LzList
+    pub fn load_all<'a, IT, ST:AsRef<Path>+Debug>(fnames:&mut IT)->LzList
         where IT:Iterator<Item = ST>
     {
         let mut jn = Vec::new();
         for n in fnames{ 
-            match LzList::load(&n.to_string()){
+            match LzList::load(&n){
                 Ok(lz)=>jn.push(lz),
                 _=>{},
             }
@@ -145,6 +150,15 @@ impl LzList {
 
     pub fn iter(&self)->::std::slice::Iter<Lz>{
         self.items.iter()
+    }
+
+    pub fn lz_by_name(s:&str)->Option<Lz>{
+        for i in self.items.iter() {
+            if i.name == s {
+                return Some(i.clone());
+            }
+        }
+        None
     }
 }
 

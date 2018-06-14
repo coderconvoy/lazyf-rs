@@ -47,7 +47,7 @@ impl Cfg{
     }
 
     pub fn localize(&self,s:&str)->PathBuf{
-        let mut res = self.loc.clone();
+        let mut res = self.folder();
         res.push(s);
         res
     }
@@ -57,6 +57,9 @@ impl Cfg{
             Some(r)=>PathBuf::from(r),
             _ => PathBuf::new(),
         }
+    }
+    pub fn lz_by_name(s:&str)->Option<Lz>{
+        self.list.item_by_name(s)
     }
 }
 

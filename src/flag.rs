@@ -11,7 +11,6 @@ pub fn ss_get(s:&str, iter:&mut Iterator<Item=String>)->Option<String>{
         if a == s {
             fnd = true;
         }
-        println!("{}",a);
     }
 
     if fnd { return Some(String::from(""));}
