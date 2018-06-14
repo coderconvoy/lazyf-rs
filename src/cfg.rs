@@ -1,11 +1,11 @@
-use lzlist;
+use lzlist::{LzList,Lz};
 use flag;
 use brace;
 use get::SGetter;
 use std::path::PathBuf;
 
 pub struct Cfg{
-    list:lzlist::LzList,
+    list:LzList,
     loc:PathBuf,
 }
 
@@ -13,13 +13,13 @@ impl Cfg{
     //Will return a Cfg even if there are no items.
     pub fn load(loc:&str)->Cfg{
         let rloc = &brace::env_replace(loc);
-        match lzlist::LzList::load(rloc) {
+        match LzList::load(rloc) {
             Ok(r)=>Cfg{
                 list:r,
                 loc:PathBuf::from(rloc),
             },
             Err(_)=>Cfg{
-                list:lzlist::LzList::empty(),
+                list:LzList::empty(),
                 loc:PathBuf::from(&brace::env("$PWD")),
             }
         }
@@ -35,13 +35,13 @@ impl Cfg{
 
         for l in locs {
             let l2 = &brace::env_replace(l);
-            match lzlist::LzList::load(l2){
+            match LzList::load(l2){
                 Ok(r)=>return Cfg{list:r,loc:PathBuf::from(l2)},
                 _=>{},
             }
         }
         Cfg{
-            list:lzlist::LzList::empty(),
+            list:LzList::empty(),
             loc:PathBuf::from(""),
         }
     }
@@ -58,8 +58,8 @@ impl Cfg{
             _ => PathBuf::new(),
         }
     }
-    pub fn lz_by_name(s:&str)->Option<Lz>{
-        self.list.item_by_name(s)
+    pub fn lz_by_name(&self,s:&str)->Option<Lz>{
+        self.list.lz_by_name(s)
     }
 }
 

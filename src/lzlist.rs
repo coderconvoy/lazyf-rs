@@ -2,7 +2,7 @@ use std::fs::File;
 use std::fmt::Debug;
 use std::path::Path;
 use std::io::Read;
-use std::fmt::Display;
+//use std::fmt::Display;
 use brace;
 use get::SGetter;
 
@@ -27,9 +27,13 @@ impl Lz{
                 res.name = v.trim().to_string();
                 continue;
             }
-            res.deets.insert(format!("ext{}",k-1),v.trim().to_string());
+            res.add_deet(&format!("ext{}",k-1),v.trim());
         }
         res
+    }
+
+    pub fn add_deet(&mut self,k:&str,v:&str){
+        self.deets.insert(k.to_string(),v.to_string());
     }
 
     
@@ -77,7 +81,7 @@ impl LzList {
                 if rt == "" {
                     //TODO Err
                 }else {
-                    curr.deets.insert(lt.trim().to_string(),rt.trim().to_string());
+                    curr.add_deet(lt.trim(),rt.trim());
                 }
                 
             }else {
@@ -152,7 +156,7 @@ impl LzList {
         self.items.iter()
     }
 
-    pub fn lz_by_name(s:&str)->Option<Lz>{
+    pub fn lz_by_name(&self,s:&str)->Option<Lz>{
         for i in self.items.iter() {
             if i.name == s {
                 return Some(i.clone());
