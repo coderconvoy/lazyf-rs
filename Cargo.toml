@@ -3,6 +3,6 @@ name = "lazyf"
 version = "0.1.0"
 authors = ["coderconvoy <thebeaky@psmail.net>"]
 description = "A simple means for grabbing user config, combining flags and a config file format"
-licence = "MIT"
+license = "MIT"
 
 [dependencies]
