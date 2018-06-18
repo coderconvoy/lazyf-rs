@@ -1,3 +1,11 @@
+//! # Get - SGetter
+//!
+//! This module provides a mechanism for asking for anything from the lazyf format.
+//! As long as it can be parsed from a string
+//! -- That is anything that implements the FromStr trait.
+//!
+//! To implement it provide the get_s method returning a String
+
 use std::str::FromStr;
 
 

@@ -1,7 +1,13 @@
+//! # Flag
+//! 
+//! The flag module reads flag arguments implementing get::SGetter
+//! 
 
 use std::env;
 use get::SGetter;
 
+/// The function that does the actual work. It read's through the programs arguments looking for a
+/// match, and returns the argument after the match.
 pub fn ss_get(s:&str, iter:&mut Iterator<Item=String>)->Option<String>{
     let mut fnd = false;
     for a in iter{
