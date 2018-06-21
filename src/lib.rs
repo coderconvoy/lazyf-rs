@@ -8,9 +8,10 @@
 //! The cfg (config) module combines the lzlist (lazyfile) module and the
 //! flag module
 //!
-//! The lazyf file format basically looks like this:
+//! The lazyf file format basically looks like this (ignore quotes):
 //!
 //! ```
+//! "
 //! Superman:
 //!     power:Flying
 //!     age:29
@@ -18,6 +19,7 @@
 //! Batman:
 //!     power:Money
 //!     age:40
+//! ";
 //! ```
 //!
 //! The simplesy way to get config options is:

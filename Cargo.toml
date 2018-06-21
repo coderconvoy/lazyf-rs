@@ -1,6 +1,6 @@
 [package]
 name = "lazyf"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["coderconvoy <thebeaky@psmail.net>"]
 description = "A simple means for grabbing user config, combining flags and a config file format"
 license = "MIT"

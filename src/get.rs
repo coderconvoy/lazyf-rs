@@ -15,10 +15,7 @@ pub trait SGetter<IT> {
     fn get_s(&self,s:IT)->Option<String>;
     
     fn get_s_def(&self,s:IT,def:&str)->String{
-        match self.get_s(s) {
-            Some(r)=>r,
-            None=>def.to_string()
-        }
+        self.get_s(s).unwrap_or(def.to_string()) 
     }
 
     fn get_t<RT:FromStr>(&self,s:IT)->Option<RT>{
@@ -34,10 +31,7 @@ pub trait SGetter<IT> {
     }
 
     fn get_t_def<RT:FromStr>(&self,s:IT,def:RT)->RT{
-        match self.get_t(s) {
-            Some(res)=>res,
-            None=>def,
-        }
+        self.get_t(s).unwrap_or(def)
     }
     
 }
