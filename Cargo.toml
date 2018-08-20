@@ -1,8 +1,10 @@
 [package]
 name = "lazyf"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["coderconvoy <thebeaky@psmail.net>"]
-description = "A simple means for grabbing user config, combining flags and a config file format"
+description = "A simple means for grabbing config from flags and config files with a lazy, human readable, file format."
+
 license = "MIT"
+keywords = ["config","file","loader","lazy","flag"]
 
 [dependencies]
