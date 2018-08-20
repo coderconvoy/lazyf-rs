@@ -7,6 +7,7 @@
 //! To implement it provide the get_s method returning a String
 
 use std::str::FromStr;
+use lz_err::LzErr;
 
 
 
@@ -19,15 +20,15 @@ pub trait SGetter<IT> {
         self.get_s(s).unwrap_or(def.to_string()) 
     }
 
-    fn get_t<RT:FromStr>(&self,s:IT)->Result<RT,GetErr>{
+    fn get_t<RT:FromStr>(&self,s:IT)->Result<RT,LzErr>{
         match self.get_s(s) {
             Some(r)=>{
                 match r.parse::<RT>(){
                     Ok(res)=>Ok(res),
-                    Err(_)=>Err(GetErr::NoParse(r.to_string())),
+                    Err(_)=>Err(LzErr::NoParse(r.to_string())),
                 }
             }
-            None=>Err(GetErr::NotFound),
+            None=>Err(LzErr::NotFound),
         }
     }
 
