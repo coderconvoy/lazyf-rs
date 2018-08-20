@@ -2,12 +2,12 @@ use std::fs::File;
 use std::fmt::Debug;
 use std::path::Path;
 use std::io::Read;
+use std::collections::HashMap;
 //use std::fmt::Display;
 use brace;
 use get::SGetter;
+use lz_err::LzErr;
 
-//use std::io::prelude::*;
-use std::collections::HashMap;
 
 #[derive(Clone)]
 pub struct Lz{
@@ -54,7 +54,7 @@ pub struct LzList {
 }
 
 impl LzList {
-    pub fn read(s :&String)->Result<LzList,String>{
+    pub fn read(s :&String)->Result<LzList,LzErr>{
         let sp = s.split("\n");
         let mut res = LzList{
             items:Vec::new(),
@@ -95,25 +95,18 @@ impl LzList {
 
         }
         if !fnd {
-            return Err("No Items found".to_string())
+            return Err(LzErr::NoItemsFound);
 
         }
         res.items.push(curr);
         Ok(res)
     }
 
-    pub fn load<P:AsRef<Path>>(fname:P)->Result<LzList,String>{
-        let fok = File::open(fname);
+    pub fn load<P:AsRef<Path>>(fname:P)->Result<LzList,LzErr>{
+        let mut f = File::open(fname)?;
         let mut s = String::new();
-        match fok {
-            Ok(mut f)=>{
-                match f.read_to_string(&mut s) {
-                    Ok(_)=>LzList::read(&s),
-                    Err(e)=>Err(format!("read_to_string failed:{}",e)),
-                }
-            },
-            Err(_)=> Err("Could not read file".to_string()),
-        }
+        f.read_to_string(&mut s)?;
+        LzList::read(&s)
     }
 
     pub fn load_all<'a, IT, ST:AsRef<Path>+Debug>(fnames:&mut IT)->LzList

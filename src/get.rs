@@ -9,6 +9,7 @@
 use std::str::FromStr;
 
 
+
 pub trait SGetter<IT> {
     //IT = IndexType
     //RT = ResultType
@@ -18,15 +19,15 @@ pub trait SGetter<IT> {
         self.get_s(s).unwrap_or(def.to_string()) 
     }
 
-    fn get_t<RT:FromStr>(&self,s:IT)->Option<RT>{
+    fn get_t<RT:FromStr>(&self,s:IT)->Result<RT,GetErr>{
         match self.get_s(s) {
             Some(r)=>{
                 match r.parse::<RT>(){
-                    Ok(res)=>Some(res),
-                    Err(_)=>None,
+                    Ok(res)=>Ok(res),
+                    Err(_)=>Err(GetErr::NoParse(r.to_string())),
                 }
             }
-            None=>None
+            None=>Err(GetErr::NotFound),
         }
     }
 

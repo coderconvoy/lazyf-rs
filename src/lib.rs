@@ -50,6 +50,9 @@ pub mod brace;
 pub mod get;
 pub use get::SGetter;
 
+pub mod lz_err;
+pub use lz_err::LzErr;
+
 //make trait public
 
 

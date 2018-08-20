@@ -27,26 +27,20 @@ fn args(){
 
 #[test]
 fn reader(){
-    let f = lzlist::LzList::load("test_data/lztest.lz");
+    let f = lzlist::LzList::load("test_data/lztest.lz").unwrap();
 
-    match f {
-        Ok(c)=>{
-            assert_eq!( c.len(),2); 
-            assert_eq!( c.get_s("config.ext0"),Some("4".to_string()));
-            assert_eq!( c.get_t_def("config.ext0",0),4);
-            assert_eq!(c.get_s("c2.lesson"),Some("3".to_string()));      
+    assert_eq!( f.len(),2); 
+    assert_eq!( f.get_s("config.ext0"),Some("4".to_string()));
+    assert_eq!( f.get_t_def("config.ext0",0),4);
+    assert_eq!( f.get_s("c2.lesson"),Some("3".to_string()));      
 
-            for (i,v) in c.iter().enumerate(){
-                if i == 0 {
-                    assert_eq!(v.name , "config")
-                }
-            }
-            assert_eq!(c.get_s("c3.poo"),None);
-        },
-        Err(e)=>assert!(false,"Error {}",e),
+    for (i,v) in f.iter().enumerate(){
+        if i == 0 {
+            assert_eq!(v.name , "config")
+        }
     }
+    assert_eq!(f.get_s("c3.poo"),None);
 
-    //assert_eq!(r,Result::Err("poo".to_string()));
 }
 
 #[test]
