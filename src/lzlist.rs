@@ -187,6 +187,14 @@ impl IntoIterator for LzList {
     }
 }
 
+impl<'a> IntoIterator for &'a LzList {
+    type Item = &'a Lz;
+    type IntoIter = ::std::slice::Iter<'a,Lz>;
+    fn into_iter(self)->::std::slice::Iter<'a,Lz>{
+        (&self.items).into_iter()
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
