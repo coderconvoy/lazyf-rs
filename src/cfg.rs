@@ -1,5 +1,4 @@
 use lzlist::{LzList,Lz};
-use std::ops::Deref;
 use flag;
 use brace;
 use get::SGetter;
