@@ -1,4 +1,5 @@
 use lzlist::{LzList,Lz};
+use std::ops::Deref;
 use flag;
 use brace;
 use get::SGetter;
@@ -26,7 +27,10 @@ impl Cfg{
     }
 
     //load_first
-    pub fn load_first(fgname:&str,locs:&[&str])->Cfg{
+    pub fn load_first<'a,L,S>(fgname:&str,locs:L)->Cfg
+        where L:IntoIterator<Item=S>,
+            S:AsRef<str>,
+    {
         let floc = flag::Fg{}.get_s(fgname);
         match floc{
             Some(s)=>return Cfg::load(&s),
@@ -34,7 +38,7 @@ impl Cfg{
         }
 
         for l in locs {
-            let l2 = &brace::env_replace(l);
+            let l2 = &brace::env_replace(&l.as_ref());
             match LzList::load(l2){
                 Ok(r)=>return Cfg{list:r,loc:PathBuf::from(l2)},
                 _=>{},

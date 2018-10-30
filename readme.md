@@ -8,8 +8,8 @@ Changes:
 
 //coming
 v 0.1.4:
-//done
 impl IntoIterator for &LzList
+Genericize Cfg load_first make easier to call
 
 v 0.1.3:
 
